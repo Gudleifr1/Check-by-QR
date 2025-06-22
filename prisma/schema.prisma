@@ -1,0 +1,88 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+// Модель пользователя
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("USER") // USER, CURATOR, ADMIN
+  
+  // Связи с посещаемостью
+  attendance Attendance[]
+  
+  // Связи с группами (если пользователь - куратор)
+  curatedGroups Group[] @relation("GroupCurator")
+  
+  // Связи с группами (если пользователь - студент)
+  studentGroups StudentGroup[]
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Модель группы студентов
+model Group {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique // Например: "ИС-21-1", "ПО-22-2"
+  description String?
+  curatorId   Int?
+  curator     User?    @relation("GroupCurator", fields: [curatorId], references: [id])
+  
+  // Связи со студентами
+  students    StudentGroup[]
+  
+  // Связи с посещаемостью
+  attendance  Attendance[]
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Связующая таблица между студентами и группами
+model StudentGroup {
+  id      Int @id @default(autoincrement())
+  userId  Int
+  groupId Int
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  group   Group @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  
+  // Дополнительные поля для студента в группе
+  enrollmentDate DateTime @default(now())
+  isActive       Boolean  @default(true)
+  
+  @@unique([userId, groupId])
+}
+
+// Расширенная модель посещаемости
+model Attendance {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  
+  // Связь с группой (опционально)
+  groupId   Int?
+  group     Group?   @relation(fields: [groupId], references: [id])
+  
+  date      DateTime @default(now())
+  latitude  Float    // Широта
+  longitude Float    // Долгота
+  
+  // Дополнительные поля
+  qrCode    String?  // Код QR, который был отсканирован
+  isValid   Boolean  @default(true) // Валидность сканирования
+  
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+} 
