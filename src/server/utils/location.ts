@@ -1,7 +1,7 @@
 // Константы для проверки местоположения
 export const COLLEGE_COORDINATES = {
-  latitude: 50.4049,
-  longitude: 80.2492
+  latitude: 50.4597341,
+  longitude: 80.2851465
 };
 
 export const MAX_DISTANCE = 0.002; // 0.002 =  Примерно 200 метров в градусах

@@ -36,7 +36,7 @@ git clone https://github.com/Gudleifr1/Check-by-QR
 
 2. Установите зависимости:
 ```bash
-npm install
+npm install --force
 ```
 
 3. Настройте базу данных:
@@ -51,6 +51,15 @@ npm run dev
 
 Приложение будет доступно по адресу: https://localhost:5173
 
+
+Просмотр и редактиврование БД:
+```bash
+npm install -g prisma
+```
+
+```bash
+prisma studio
+```
 ## Безопасность
 
 - Каждый QR-код действителен только в день генерации

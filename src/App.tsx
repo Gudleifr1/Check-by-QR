@@ -264,6 +264,7 @@ function App() {
         <BottomNav user={user} />
         <Snackbar
           open={!!notification}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
           ClickAwayListenerProps={{ mouseEvent: false, touchEvent: false }}
           onClose={() => setNotification(null)}
         >
