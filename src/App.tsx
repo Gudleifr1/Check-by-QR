@@ -264,7 +264,7 @@ function App() {
         <BottomNav user={user} />
         <Snackbar
           open={!!notification}
-          autoHideDuration={6000}
+          ClickAwayListenerProps={{ mouseEvent: false, touchEvent: false }}
           onClose={() => setNotification(null)}
         >
           <Alert 

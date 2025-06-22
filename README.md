@@ -31,7 +31,7 @@
 
 1. Клонируйте репозиторий:
 ```bash
-git clone [url-репозитория]
+git clone https://github.com/Gudleifr1/Check-by-QR
 ```
 
 2. Установите зависимости:

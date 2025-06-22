@@ -27,6 +27,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/groups', groupsRoutes);
 
+
 // Получение списка пользователей (только для админа)
 app.get('/api/users', authenticateToken, authorizeRoles([USER_ROLES.ADMIN]), async (req, res) => {
   try {
@@ -37,6 +38,49 @@ app.get('/api/users', authenticateToken, authorizeRoles([USER_ROLES.ADMIN]), asy
   } catch (error) {
     console.error('Ошибка при получении списка пользователей:', error);
     res.status(500).json({ error: error instanceof Error ? error.message : 'Произошла ошибка' });
+  }
+});
+
+// Обработка обновления координат колледжа (только для админа)
+app.post('/api/update-college-coords', authenticateToken, authorizeRoles([USER_ROLES.ADMIN]), async (req, res) => {
+  try {
+    const { latitude, longitude } = req.body;
+    if (typeof latitude !== 'number' || typeof longitude !== 'number') {
+      return res.status(400).json({ error: 'Некорректные координаты' });
+    }
+    const locationFile = path.join(__dirname,  'utils', 'location.ts');
+    let fileContent;
+    try {
+      fileContent = fs.readFileSync(locationFile, 'utf-8');
+    } catch (e) {
+      console.error('Ошибка чтения файла:', e);
+      return res.status(500).json({ error: 'Ошибка чтения файла', details: e.message });
+    }
+    const regex = /export const COLLEGE_COORDINATES = \{[\s\S]*?\}\s*;?/m;
+      if (!regex.test(fileContent)) {
+        console.error('Блок COLLEGE_COORDINATES не найден для замены!');
+        return res.status(500).json({ error: 'COLLEGE_COORDINATES block not found for replacement!' });
+      }
+    const replaced = fileContent.replace(
+      regex,
+      `export const COLLEGE_COORDINATES = {\n  latitude: ${latitude},\n  longitude: ${longitude}\n};`
+    );
+    try {
+      fs.writeFileSync(locationFile, replaced, 'utf-8');
+    } catch (e) {
+      console.error('Ошибка записи файла:', e);
+      return res.status(500).json({ error: 'Ошибка записи файла', details: e.message });
+    }
+    res.json({ success: true });
+  } catch (error) {
+    console.error('Ошибка при обновлении координат колледжа:', error);
+    let message = 'unknown';
+    let stack = '';
+    if (error instanceof Error) {
+      message = error.message;
+      stack = error.stack || '';
+    }
+    res.status(500).json({ error: 'Ошибка при обновлении координат колледжа', details: message, stack });
   }
 });
 

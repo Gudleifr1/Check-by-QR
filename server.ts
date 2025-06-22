@@ -7,6 +7,7 @@ import { authenticateToken, authorizeRoles } from './src/server/middleware/authM
 import { USER_ROLES } from './src/server/auth.js';
 import { PrismaClient } from '@prisma/client';
 
+
 console.log('Сервер: Загрузка server.ts');
 
 const prisma = new PrismaClient();
@@ -80,6 +81,8 @@ app.put('/api/users/:id/role', authenticateToken, authorizeRoles([USER_ROLES.ADM
     res.status(400).json({ error: error instanceof Error ? error.message : 'Произошла ошибка' });
   }
 });
+
+
 
 const PORT = Number(process.env.PORT) || 5000;
 

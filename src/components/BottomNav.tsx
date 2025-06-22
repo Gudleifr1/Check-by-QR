@@ -86,7 +86,9 @@ const BottomNav: React.FC<BottomNavProps> = ({ user }) => {
           - icon: иконка пункта
           При добавлении новых разделов, добавляйте новые BottomNavigationAction
         */}
-        <BottomNavigationAction label="Главная" icon={<Home />} />
+        {user && user.role === 'ADMIN' && (
+          <BottomNavigationAction label="Главная" icon={<Home />} />
+        )}
         <BottomNavigationAction label="Профиль" icon={<Person />} />
         <BottomNavigationAction label="Сканер" icon={<QrCodeScannerIcon />} />
         {/* Условный рендеринг для администратора */}

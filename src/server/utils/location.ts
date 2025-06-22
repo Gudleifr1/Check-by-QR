@@ -1,10 +1,10 @@
 // Константы для проверки местоположения
 export const COLLEGE_COORDINATES = {
-  latitude: 50.4597,
-  longitude: 80.2850
+  latitude: 50.4049,
+  longitude: 80.2492
 };
 
-export const MAX_DISTANCE = 0.002; // Примерно 200 метров в градусах
+export const MAX_DISTANCE = 0.002; // 0.002 =  Примерно 200 метров в градусах
 
 export interface LocationCheckResult {
   isNearby: boolean;
